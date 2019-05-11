@@ -95,7 +95,7 @@ systemctl start ssr-redir
 (ss-redir args... </dev/null &>>/var/log/ss-redir.log &)
 (ssr-redir args... </dev/null &>>/var/log/ssr-redir.log &)
 
-# ss-redir args
+ssr-redir
 -s <server_addr>    # 服务器地址
 -p <server_port>    # 服务器端口
 -m <server_method>  # 加密方式

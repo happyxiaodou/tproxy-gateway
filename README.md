@@ -27,6 +27,9 @@ docker network create -d macvlan \
 # 拉取docker镜像
 docker pull lisaac/tproxy-gateway:`uname -m`
 
+docker run  -ti --net=host ssp  /bin/bash
+
+
 # 运行容器
 docker run -d --name tproxy-gateway \
   -e TZ=Asia/Shanghai \
