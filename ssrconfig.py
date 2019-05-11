@@ -1,17 +1,17 @@
 #!/usr/bin/python3
 
+import base64
 import os
 import platform
 import socket
 import subprocess
+import sys
 import time
 import urllib.parse
-import sys
 
 import cli_print as cp
 import common_patterns
 import requests
-import base64
 
 
 class SSR:
@@ -414,39 +414,20 @@ def get_urls_by_subscribe(url: str):
     return list()
 
 
-
 def encode(s, urlsafe: bool = False):
-    """
-    Base64 encode.
-
-    :param s:
-    :param urlsafe: Whether use URL Safe Mode
-    :return: str
-    """
     if isinstance(s, str):
         s = s.encode('utf-8')
-
     if urlsafe:
         return base64.urlsafe_b64encode(s).decode('utf-8')
-
     return base64.b64encode(s).decode('utf-8')
 
 
 def decode(s):
-    """
-    Base64 decode.
-
-    :param s:
-    :return: str
-    """
     if isinstance(s, str):
         if len(s) % 4 > 0:
             s = s + '=' * (4 - len(s) % 4)
         s = s.encode('utf-8')
-
-    # URL Safe
     s = s.translate(bytes.maketrans(b'-_', b'+/'))
-
     try:
         return base64.b64decode(s).decode('utf-8')
     except UnicodeDecodeError:
@@ -454,13 +435,6 @@ def decode(s):
 
 
 def remove(source: list, els=None):
-    """
-    Remove elements.
-
-    :param list source: Source list
-    :param els: Element(s) to be removed
-    :return: list
-    """
     r = []
     if els is None:
         els = ['', None]
@@ -470,30 +444,18 @@ def remove(source: list, els=None):
     for el in source:
         if el not in els:
             r.append(el)
-
     return r
 
-def unique(source: list):
-    """
-    Unique.
 
-    :param list source: Source list
-    :return: list
-    """
+def unique(source: list):
     r = []
     for el in source:
         if el not in r:
             r.append(el)
     return r
 
-def remove_and_unique(source: list, els=None):
-    """
-    Remove and unique.
 
-    :param list source: Source list
-    :param els: Element(s) to be removed
-    :return: list
-    """
+def remove_and_unique(source: list, els=None):
     r = unique(remove(source=source, els=els))
     return r
 
