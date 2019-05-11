@@ -9,7 +9,7 @@ RUN	sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ADD pip.conf /root/.pip/
-RUN pip3 install requests common_patterns qwert
+RUN pip3 install --upgrade pip && pip3 install requests common_patterns
 
 ####安装ssr-libv
 COPY  ./shadowsocksr-libev/  /tmp/shadowsocksr-libev

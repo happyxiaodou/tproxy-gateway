@@ -11,8 +11,7 @@ import sys
 import cli_print as cp
 import common_patterns
 import requests
-from qwert import base64
-from qwert import list_fn
+import base64
 
 
 class SSR:
@@ -240,28 +239,28 @@ class SSR:
             protocol=self._protocol,
             method=self._method,
             obfs=self._obfs,
-            password=base64.encode(self._password, urlsafe=True))
+            password=encode(self._password, urlsafe=True))
 
         suffix_list = []
         if self._proto_param:
             suffix_list.append('protoparam={proto_param}'.format(
-                proto_param=base64.encode(self.proto_param, urlsafe=True),
+                proto_param=encode(self.proto_param, urlsafe=True),
             ))
 
         if self._obfs_param:
             suffix_list.append('obfsparam={obfs_param}'.format(
-                obfs_param=base64.encode(self.obfs_param, urlsafe=True),
+                obfs_param=encode(self.obfs_param, urlsafe=True),
             ))
 
         suffix_list.append('remarks={remarks}'.format(
-            remarks=base64.encode(self.remarks, urlsafe=True),
+            remarks=encode(self.remarks, urlsafe=True),
         ))
 
         suffix_list.append('group={group}'.format(
-            group=base64.encode(self.group, urlsafe=True),
+            group=encode(self.group, urlsafe=True),
         ))
 
-        return 'ssr://{}'.format(base64.encode('{prefix}/?{suffix}'.format(
+        return 'ssr://{}'.format(encode('{prefix}/?{suffix}'.format(
             prefix=prefix,
             suffix='&'.join(suffix_list),
         ), urlsafe=True))
@@ -283,7 +282,7 @@ class SSR:
 
     def __parse_ssr(self, ssr_base64: str):
         ssr = ssr_base64.split('#')[0]
-        ssr = base64.decode(ssr)
+        ssr = decode(ssr)
 
         if isinstance(ssr, bytes):
             return
@@ -296,12 +295,12 @@ class SSR:
         self._protocol = ssr_list[2]
         self._method = ssr_list[3]
         self._obfs = ssr_list[4]
-        self._password = base64.decode(password_and_params[0])
+        self._password = decode(password_and_params[0])
 
         params_dict = dict()
         for param in password_and_params[1].split('&'):
             param_list = param.split('=')
-            params_dict[param_list[0]] = base64.decode(param_list[1])
+            params_dict[param_list[0]] = decode(param_list[1])
 
         params_dict_keys = params_dict.keys()
         for key in ['proto_param', 'obfs_param', 'remarks', 'group']:
@@ -313,7 +312,7 @@ class SSR:
         ss = ss_base64.split('#')
         if len(ss) > 1:
             self._remarks = urllib.parse.unquote(ss[1])
-        ss = base64.decode(ss[0])
+        ss = decode(ss[0])
 
         if isinstance(ss, bytes):
             return
@@ -415,15 +414,99 @@ def get_urls_by_subscribe(url: str):
     return list()
 
 
+
+def encode(s, urlsafe: bool = False):
+    """
+    Base64 encode.
+
+    :param s:
+    :param urlsafe: Whether use URL Safe Mode
+    :return: str
+    """
+    if isinstance(s, str):
+        s = s.encode('utf-8')
+
+    if urlsafe:
+        return base64.urlsafe_b64encode(s).decode('utf-8')
+
+    return base64.b64encode(s).decode('utf-8')
+
+
+def decode(s):
+    """
+    Base64 decode.
+
+    :param s:
+    :return: str
+    """
+    if isinstance(s, str):
+        if len(s) % 4 > 0:
+            s = s + '=' * (4 - len(s) % 4)
+        s = s.encode('utf-8')
+
+    # URL Safe
+    s = s.translate(bytes.maketrans(b'-_', b'+/'))
+
+    try:
+        return base64.b64decode(s).decode('utf-8')
+    except UnicodeDecodeError:
+        return base64.b64decode(s)
+
+
+def remove(source: list, els=None):
+    """
+    Remove elements.
+
+    :param list source: Source list
+    :param els: Element(s) to be removed
+    :return: list
+    """
+    r = []
+    if els is None:
+        els = ['', None]
+    elif not isinstance(els, list):
+        els = [els]
+
+    for el in source:
+        if el not in els:
+            r.append(el)
+
+    return r
+
+def unique(source: list):
+    """
+    Unique.
+
+    :param list source: Source list
+    :return: list
+    """
+    r = []
+    for el in source:
+        if el not in r:
+            r.append(el)
+    return r
+
+def remove_and_unique(source: list, els=None):
+    """
+    Remove and unique.
+
+    :param list source: Source list
+    :param els: Element(s) to be removed
+    :return: list
+    """
+    r = unique(remove(source=source, els=els))
+    return r
+
+
 def get_urls_by_base64(text_base64: str):
-    text = base64.decode(text_base64)
+    text = decode(text_base64)
     if isinstance(text, str):
-        return list_fn.remove_and_unique(text.split('\n'))
+        return remove_and_unique(text.split('\n'))
     return list()
 
 
 def get_urls_by_string(string: str):
-    return list_fn.unique(common_patterns.findall_ssr_urls(string=string))
+    return unique(common_patterns.findall_ssr_urls(string=string))
 
 
 def ping(host):
