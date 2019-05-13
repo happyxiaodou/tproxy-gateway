@@ -12,7 +12,7 @@ function stop_ss_tproxy {
 
 function update_ss_config {
   # 更新 ssr-confi
-  python3 ssrconfig.py $SUB_URL
+  python3 $CONFIG_PATH/ssrconfig.py
 
   proxy_server=$(echo $CONFIG_PATH/proxy_server)
   sed -i 's/proxy_server=.*/proxy_server=('$proxy_server')/'  $CONFIG_PATH/ss-tproxy.conf

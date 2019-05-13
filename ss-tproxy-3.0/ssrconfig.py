@@ -387,7 +387,7 @@ class SSR:
         if path_to_file:
             self._path_to_ssr_conf = path_to_file
 
-        cp.about_t('生成配置文件', self.path_to_ssr_conf, 'for shadowsocksr')
+        cp.about_to('生成配置文件', self.path_to_ssr_conf, 'for shadowsocksr')
         with open(self.path_to_ssr_conf, 'wb') as f:
             json_string = self.get_config_json_string()
             f.write(json_string.encode('utf-8'))
@@ -396,7 +396,7 @@ class SSR:
                 cp.plain_text(json_string)
 
     def __remove_ssr_conf(self):
-        cp.about_t('Deleting', self.path_to_ssr_conf, 'config file')
+        cp.about_to('Deleting', self.path_to_ssr_conf, 'config file')
         os.remove(self.path_to_ssr_conf)
         cp.success()
 
@@ -494,7 +494,7 @@ def write_server_file(path_to_file: str, plain_to_console: str):
         f.write(plain_to_console.encode('utf-8'))
 
 
-def ssr_file(url: str):
+def sub_file(url: str):
     urls = get_urls_by_subscribe(url)
     small = 1000
     proxy_server = ""
@@ -510,15 +510,33 @@ def ssr_file(url: str):
         if small > response:
             fastSSR.url = url
             small = response
-        print("测试服务器速度", ssrObject.server, response)
-    print("当前选择最快的服务为", ssrObject.remarks)
-    print("proxy_server", proxy_server)
+        cp.about_to("测试服务器速度", ssrObject.server, response)
+    cp.about_to("当前选择最快的服务为", ssrObject.remarks)
+    cp.about_to("proxy_server", proxy_server)
     fastSSR.write_config_file("/etc/ss-tproxy/ssr-config.json")
     write_server_file("/etc/ss-tproxy/proxy_server", proxy_server)
 
 
+def ssr_file(url: str):
+    fastSSR = SSR()
+    fastSSR.local_address = "0.0.0.0"
+    fastSSR.local_port = 60080
+    fastSSR.url = url
+    fastSSR.write_config_file("/etc/ss-tproxy/ssr-config.json")
+    write_server_file("/etc/ss-tproxy/proxy_server", fastSSR.server)
+
+
 def main():
-    ssr_file(sys.argv[1])
+    if "SUB_URL" in os.environ:
+        cp.about_to("获取到 sub订阅号", os.environ.get("SUB_URL"))
+        sub_file(os.environ.get("SUB_URL"))
+
+    if "SSR_URL" in os.environ:
+        cp.about_to("获取到 ssr服务器地址", os.environ.get("SSR_URL"))
+        ssr_file(os.environ.get("SSR_URL"))
+
+    cp.error("无法获取服务配置参数 SUB_URL  SSR_URL ")
+    return
 
 
 if __name__ == '__main__':

@@ -18,12 +18,27 @@ echo "粘贴vmess协议URI ( vmess://xxxxx )" && \
 
 # 创建docker network
 docker network create -d macvlan \
-  --subnet=10.1.1.0/24 --gateway=10.1.1.1 \
-  --ipv6 --subnet=fe80::/10 --gateway=fe80::1 \
-  -o parent=eth0 \
+  --subnet=10.1.1.0/24 \
+  --gateway=10.1.1.1 \
+  -o parent=en0 \
   -o macvlan_mode=bridge \
   dMACvLAN
-
+  
+ ##ipvlan l2
+docker network create -d ipvlan \
+  --subnet=10.1.1.0/24 \
+  --gateway=10.1.1.1 \
+  -o parent=en0 \
+  -o ipvlan_mode=l2 \
+  dMACvLAN
+  
+  ##ipvlan l3
+docker network create -d ipvlan \
+  --subnet=10.1.1.0/24 \
+  -o parent=en0 \
+  -o ipvlan_mode=l3 \
+  dMACvLAN
+  
 # 拉取docker镜像
 docker pull lisaac/tproxy-gateway:`uname -m`
 
@@ -31,14 +46,12 @@ docker run  -ti --net=host ssp  /bin/bash
 
 
 # 运行容器
-docker run -d --name tproxy-gateway \
+docker run -d --name ssp \
   -e TZ=Asia/Shanghai \
+  -e SUB_URL=https://eimi.cloud/link/5N5YxdWxEmPfaW6q\?mu\=1 \
   --network dMACvLAN --ip 10.1.1.254 \
   --privileged \
-  --restart unless-stopped \
-  -v $HOME/.docker/tproxy-gateway:/etc/ss-tproxy \
-  -v $HOME/.docker/tproxy-gateway/crontab:/etc/crontabs/root \
-  lisaac/tproxy-gateway:`uname -m`
+  ssp
 
 # 查看网关运行情况
 docker logs tproxy-gateway
