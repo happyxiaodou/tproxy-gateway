@@ -499,8 +499,6 @@ def sub_file(url: str):
     small = 1000
     proxy_server = ""
     fastSSR = SSR()
-    fastSSR.local_address = "0.0.0.0"
-    fastSSR.local_port = 60080
     ssrObject = SSR()
     for url in urls:
         ssrObject.url = url
@@ -512,6 +510,8 @@ def sub_file(url: str):
             small = response
         cp.about_to("测试服务器速度", ssrObject.server, response)
     cp.about_to("当前选择最快的服务为", ssrObject.remarks)
+    fastSSR.local_port = "0.0.0.0"
+    fastSSR.local_port = 60080
     cp.about_to("proxy_server", proxy_server)
     fastSSR.write_config_file("/etc/ss-tproxy/ssr-config.json")
     write_server_file("/etc/ss-tproxy/proxy_server", proxy_server)
@@ -519,9 +519,9 @@ def sub_file(url: str):
 
 def ssr_file(url: str):
     fastSSR = SSR()
+    fastSSR.url = url
     fastSSR.local_address = "0.0.0.0"
     fastSSR.local_port = 60080
-    fastSSR.url = url
     fastSSR.write_config_file("/etc/ss-tproxy/ssr-config.json")
     write_server_file("/etc/ss-tproxy/proxy_server", fastSSR.server)
 
@@ -530,13 +530,13 @@ def main():
     if "SUB_URL" in os.environ:
         cp.about_to("获取到 sub订阅号", os.environ.get("SUB_URL"))
         sub_file(os.environ.get("SUB_URL"))
-
+        return
     if "SSR_URL" in os.environ:
         cp.about_to("获取到 ssr服务器地址", os.environ.get("SSR_URL"))
         ssr_file(os.environ.get("SSR_URL"))
-
+        return
     cp.error("无法获取服务配置参数 SUB_URL  SSR_URL ")
-    return
+
 
 
 if __name__ == '__main__':

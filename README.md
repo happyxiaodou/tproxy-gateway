@@ -20,7 +20,7 @@ echo "粘贴vmess协议URI ( vmess://xxxxx )" && \
 docker network create -d macvlan \
   --subnet=10.1.1.0/24 \
   --gateway=10.1.1.1 \
-  -o parent=en0 \
+  -o parent=eth1 \
   -o macvlan_mode=bridge \
   dMACvLAN
   
@@ -46,12 +46,12 @@ docker run  -ti --net=host ssp  /bin/bash
 
 
 # 运行容器
-docker run -d --name ssp \
+docker run -ti --name ssp \
   -e TZ=Asia/Shanghai \
-  -e SUB_URL=https://eimi.cloud/link/5N5YxdWxEmPfaW6q\?mu\=1 \
-  --network dMACvLAN --ip 10.1.1.254 \
+  -e mode=chnroute \
+  -e SUB_URL= https://eimitech.com/link/5N5YxdWxEmPfaW6q\?mu\=1 \
   --privileged \
-  ssp
+  registry.cn-hangzhou.aliyuncs.com/yfxiaodou/ssr-proxy /bin/bash
 
 # 查看网关运行情况
 docker logs tproxy-gateway

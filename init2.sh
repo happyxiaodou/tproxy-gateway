@@ -14,8 +14,8 @@ function update_ss_config {
   # 更新 ssr-confi
   python3 $CONFIG_PATH/ssrconfig.py
 
-  proxy_server=$(echo $CONFIG_PATH/proxy_server)
-  sed -i 's/proxy_server=.*/proxy_server=('$proxy_server')/'  $CONFIG_PATH/ss-tproxy.conf
+  proxy_server=$(cat $CONFIG_PATH/proxy_server)
+  sed -i "s/proxy_server=.*/proxy_server=($proxy_server)/" $CONFIG_PATH/ss-tproxy.conf
 
   # 更新 ss-tproxy 规则
   if [ "$mode" = chnroute ]; then

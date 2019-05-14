@@ -1,9 +1,8 @@
-FROM alpine
+FROM arm32v7/alpine
 
 ENV TZ=Asia/Shanghai
 ENV SUB_URL variable
 ENV SSR_URL variable
-ENV mode=chnroute
 
 
 RUN	sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && \
