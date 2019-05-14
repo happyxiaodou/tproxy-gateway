@@ -76,10 +76,10 @@ RUN  cd /tmp/ss-tproxy-3.0 \
 
 
 ##安装启动脚本
-COPY init2.sh /
-RUN chmod +x /init2.sh
+COPY init.sh /
+RUN chmod +x /init.sh
 
 ##删除临时文件
 RUN rm -rf /tmp/*
 
-CMD ["/init2.sh","daemon"]
+CMD ["/init.sh","daemon"]
