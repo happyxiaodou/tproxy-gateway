@@ -49,7 +49,7 @@ docker run  -ti --net=host ssp  /bin/bash
 docker run -ti --name ssp \
   -e TZ=Asia/Shanghai \
   -e mode=chnroute \
-  -e SUB_URL= https://eimitech.com/link/5N5YxdWxEmPfaW6q\?mu\=1 \
+  -e SUB_URL=https://eimitech.com/link/5N5YxdWxEmPfaW6q\?mu\=1 \
   --privileged \
   registry.cn-hangzhou.aliyuncs.com/yfxiaodou/ssr-proxy /bin/bash
 

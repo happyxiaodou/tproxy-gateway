@@ -5,7 +5,6 @@ import os
 import platform
 import socket
 import subprocess
-import sys
 import time
 import urllib.parse
 
@@ -108,7 +107,7 @@ class SSR:
 
     @property
     def local_address(self):
-        return self._local_address or '127.0.0.1'
+        return self._local_address or '0.0.0.0'
 
     @local_address.setter
     def local_address(self, value: str):
@@ -512,7 +511,6 @@ def sub_file(url: str):
     cp.about_to("当前选择最快的服务为", ssrObject.remarks)
     fastSSR.local_port = "0.0.0.0"
     fastSSR.local_port = 60080
-    cp.about_to("proxy_server", proxy_server)
     fastSSR.write_config_file("/etc/ss-tproxy/ssr-config.json")
     write_server_file("/etc/ss-tproxy/proxy_server", proxy_server)
 
