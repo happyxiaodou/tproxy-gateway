@@ -512,8 +512,8 @@ function show_iptables {
 }
 
 function flush_iptables {
-    #iptables -t raw -F
-    #iptables -t raw -X
+    iptables -t raw -F
+    iptables -t raw -X
     iptables -t mangle -F
     iptables -t mangle -X
     iptables -t nat -F
