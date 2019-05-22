@@ -106,7 +106,3 @@ ip route add default via 10.1.1.254 dev mac0 # 设置静态路由
 echo "nameserver 10.1.1.254" > /etc/resolv.conf # 设置静态dns服务器
 ```
 
-# Docker Hub
-[https://hub.docker.com/r/lisaac/tproxy-gateway](https://hub.docker.com/r/lisaac/tproxy-gateway)
-
-ENJOY
