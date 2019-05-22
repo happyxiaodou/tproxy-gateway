@@ -1,8 +1,6 @@
 FROM alpine
 
 ENV TZ=Asia/Shanghai
-ENV SUB_URL variable
-ENV SSR_URL variable
 ENV mode=chnroute
 
 
